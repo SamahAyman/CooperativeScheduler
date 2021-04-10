@@ -11,10 +11,10 @@ static const uint16_t capacity = 16; //capacity of the queue
 uint16_t current_cap = 0;
 
 typedef void(*task_p)(void); ///typedef 
-#define lf(p) (2*p+1)
-#define rt(p) (2*p+2)
-#define p(c) ((c-1)/2)
-#define min(a,b) (a<b?a:b)
+#define left_node(p) (2*p+1)
+#define right_node(p) (2*p+2)
+#define root(c) ((c-1)/2)
+//#define min(a,b) (a<b?a:b)
 
 struct task {
 	task_p task;
@@ -30,30 +30,23 @@ struct task_queue {
 	struct task * tasks; //pointer to the tasks in the task queue 
 };
 
+int minimum(int a, int b)
+{
+	return (a < b ? a : b);
+}
 
-// Function declarations
-void queueINIT(struct task_queue * q);
-void enqueue(struct task_queue* q, task_p f, uint16_t priority);
-void re_enqueue(struct task_queue* q, task_p f, uint16_t priority, uint16_t delay);
-void min_heap(struct task_queue* q, int i);
-void swap(struct task *task1, struct task *task2);
-struct task dequeue(struct task_queue* q);
-void decrement_all(struct task_queue* q, uint16_t cnt);
 void push_to_main(struct task_queue* delayed_q, struct task_queue* main_q);
-uint8_t order(struct task a, struct task b);
-
 uint8_t order(struct task a, struct task b)
 {
-	// if delay introduced we put the one with less delay first 
 	if (a.delay < b.delay) return 1;
-	// if we have same delay we rearrange according to priority 
 	return (a.delay == b.delay) && (a.priority < b.priority);
 }
 
-void swap(struct task *task1, struct task *task2){
+void swap(struct task *task1, struct task *task2) {
 	struct task temp = *task1;
 	*task1 = *task2;
-	*task2 = temp;}
+	*task2 = temp;
+}
 
 void queueINIT(struct task_queue * q)
 {
@@ -69,13 +62,10 @@ void queueINIT(struct task_queue * q)
 	}
 }
 
-
 void enqueue(struct task_queue* q, task_p f, uint16_t priority)
 {
 
-	// Create new task and call the private enqueue function
 	volatile struct task new_task = { f, priority, 0 };
-	// Check for queue limits
 	if (priority > MAX_PRI) {
 		printf("Max priority reached");
 		return;
@@ -88,36 +78,21 @@ void enqueue(struct task_queue* q, task_p f, uint16_t priority)
 		printf(" queue if full ");
 		return;
 	}
-	// put at end of the queue
 	q->tasks[q->ind++] = new_task;
 	int i = (q->ind - 1);
-	while (i != 0 && order(q->tasks[i], q->tasks[p(i)])) {
-		swap(&q->tasks[p(i)], &q->tasks[i]);
-		i = p(i);
+	while (i != 0 && order(q->tasks[i], q->tasks[root(i)])) {
+		swap(&q->tasks[root(i)], &q->tasks[i]);
+		i = root(i);
 	}
 }
 
-void re_enqueue(struct task_queue* q, task_p f, uint16_t priority, uint16_t delay)
-{
-	
-	volatile struct task new_task = { f, priority, delay };
-	if (q->ind > capacity) {
-		printf(" queue if full ");
-		return;
-	}
-	q->tasks[q->ind++] = new_task;
-	int i = (q->ind - 1);
-	while (i != 0 && order(q->tasks[i], q->tasks[p(i)])) {
-		swap(&q->tasks[p(i)], &q->tasks[i]);
-		i = p(i);
-	}
-}
 
 // Max heap for pirority queue
 void min_heap(struct task_queue* q, int i)
 {
 	int small = i;
-	int left = lf(i), right = rt(i);
+	int left = left_node(i);
+	int right = right_node(i);
 	// get the minimum (left or right or this node)
 	if (left <= q->cur_prio && order(q->tasks[left], q->tasks[small])) small = left;
 	if (right <= q->cur_prio && order(q->tasks[right], q->tasks[small])) small = right;
@@ -133,27 +108,26 @@ struct task dequeue(struct task_queue* q)
 {
 	struct task ret = dummy_f;
 	// Check for queue limits
-	if (q->cur_prio == 0) {
+	if (q->ind == 0) {
 		printf("ERROR! - Queue is empty");
 		return ret;
 	}
 	// Take task reference and replace its reference with the lasr task in the queue
 	ret = q->tasks[0];
-	q->tasks[0] = q->tasks[q->cur_prio - 1];
+	q->tasks[0] = q->tasks[q->ind - 1];
 	// Decrease queue size
-	q->cur_prio--;
+	q->ind--;
 	// Put the last task (now at the top of the queue) in its correct place
 	min_heap(q, 0);
 	// return the desired task
 	return ret;
 }
 
-// Decrements all the delays in a certain queue (used with the delayed queue)
-// Guarded with 'cur_sz' --> no need for external guard
-void decrement_all(struct task_queue* q, uint16_t cnt)
+
+void delay(struct task_queue* q, uint16_t delay)
 {
 	for (uint8_t i = 0; i < q->cur_prio; i++)
-		q->tasks[i].delay -= min(cnt, q->tasks[i].delay);
+		q->tasks[i].delay -= minimum(delay, q->tasks[i].delay);
 }
 
 // Pushes all ready tasks from the delayed queue to the main queue
@@ -166,9 +140,9 @@ void push_to_main(struct task_queue* delayed_q, struct task_queue* main_q)
 
 		main_q->tasks[main_q->ind++] = new_task;
 		int i = (main_q->ind - 1);
-		while (i != 0 && order(main_q->tasks[i], q->tasks[p(i)])) {
-			swap(&q->tasks[p(i)], &q->tasks[i]);
-			i = p(i);
+		while (i != 0 && order(main_q->tasks[i], main_q->tasks[root(i)])) {
+			swap(&main_q->tasks[root(i)], &main_q->tasks[i]);
+			i = root(i);
 		}
 	}
 
@@ -177,13 +151,13 @@ void push_to_main(struct task_queue* delayed_q, struct task_queue* main_q)
 
 static void f1()
 {
-	uint8_t tst[] = "hey\n";
+	uint8_t tst[] = "ONE\n";
 	printf(tst);
 
 }
 static void f2()
 {
-	uint8_t tst[] = "heyhey\n";
+	uint8_t tst[] = "TWO\n";
 	printf(tst);
 
 }
@@ -192,19 +166,17 @@ static void f2()
 //testing//
 
 static struct task_queue main_queue;
-// Enqueue task in the main queue with a certain priority
-static void queue_task(task_p f, uint16_t priority)
-{
-	enqueue(&main_queue, f, priority, 0);
-}
+
 int main()
 {
-	struct task tst;
 	queueINIT(&main_queue);
-	enqueue(&main_queue, &f2, 2, 0);
 	enqueue(&main_queue, &f1, 1, 0);
-	tst = dequeue(&main_queue);
+	enqueue(&main_queue, &f2, 2, 0);
 	dequeue(&main_queue);
+	struct task new_task = (dequeue(&main_queue));
+	dequeue(&main_queue);
+	
+
 
 
 
