@@ -62,15 +62,14 @@ static void MX_I2C1_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-uint32_t local_time, sensor_time;
-uint32_t distance;
+uint8_t local_time, sensor_time;
+uint8_t distance;
+uint8_t endline = '\n';
+uint8_t cr = '\r';
+//output pin4 GPIOB
+//input pin4 GPIOA
 
-#define TRIG_PIN GPIO_PIN_1
-#define TRIG_PORT GPIOA
-#define ECHO_PIN GPIO_PIN_4
-#define ECHO_PORT GPIOA
-
-uint32_t hcsr04_read (void)
+uint8_t hcsr04_read (void)
 {
  local_time=0;
  HAL_GPIO_WritePin(TRIG_PORT, TRIG_PIN, GPIO_PIN_RESET);  // pull the TRIG pin HIGH
@@ -90,6 +89,13 @@ uint32_t hcsr04_read (void)
   }
 	
  return local_time;
+}
+void hexToAscii(uint8_t n, uint8_t* out)//4-bit hex value converted to an ascii character
+{
+	for (int i = 1; i >= 0; i--){
+		out[i] = n % 10 + '0';
+		n = n / 10;
+	}
 }
 /* USER CODE END 0 */
 
@@ -134,8 +140,27 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-   sensor_time = hcsr04_read();
-   distance  = sensor_time * .034/2;
+  	 sensor_time = hcsr04_read();
+ 	 distance  = sensor_time * 3.4/2;
+	 uint8_t conv;
+	 hexToAscii(distance, &conv); 
+	 HAL_UART_Transmit(&huart1, &conv, sizeof(conv), 10);
+	 HAL_UART_Transmit(&huart1, &endline, 1, 10);
+	 HAL_UART_Transmit(&huart1, &cr, 1, 10);
+	 if (distance < 30)
+	 {
+		 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_SET);  // LED HIGH
+		 HAL_Delay(distance*10);  
+		 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);  // LED LOW
+		 
+		 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);  // BUZZ HIGH
+	   HAL_Delay(distance*10);  
+	   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);  // BUZZ LOW
+	   HAL_Delay(distance*10);
+	 }
+	 else 
+		 HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);  // BUZZ LOW
+	 
    HAL_Delay(200);
   }
   /* USER CODE END 3 */
