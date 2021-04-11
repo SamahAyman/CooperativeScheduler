@@ -62,10 +62,10 @@ void queueINIT(struct task_queue * q)
 	}
 }
 
-void enqueue(struct task_queue* q, task_p f, uint16_t priority)
+void enqueue(struct task_queue* q, task_p f, uint16_t priority, uint16_t delay)
 {
 
-	volatile struct task new_task = { f, priority, 0 };
+	volatile struct task new_task = { f, priority, delay };
 	if (priority > MAX_PRI) {
 		printf("Max priority reached");
 		return;
@@ -124,7 +124,7 @@ struct task dequeue(struct task_queue* q)
 }
 
 
-void delay(struct task_queue* q, uint16_t delay)
+void _delay(struct task_queue* q, uint16_t delay)
 {
 	for (uint8_t i = 0; i < q->cur_prio; i++)
 		q->tasks[i].delay -= minimum(delay, q->tasks[i].delay);
@@ -164,7 +164,7 @@ static void f2()
 
 
 //testing//
-
+/*
 static struct task_queue main_queue;
 
 int main()
@@ -183,4 +183,4 @@ int main()
 
 
 	system("pause");
-}
+}*/
