@@ -17,6 +17,8 @@ void QueTask(task_p task_ptr, int priority)
 //dispatch function implementation 
 void Dispatch()
 {
+	struct task dispatched_task;
+
 	//decrement the delays of the tasks in the delayed queue
 	_delay(&DelayedQueue, DelayCount); 
 	
@@ -26,12 +28,17 @@ void Dispatch()
 	//clearing the delay counter
 	DelayCount = 0; 
 
-	//popping tasks to be executed from the ready queue
-	dispatched_task = dequeue(&ReadyQueue);
-	//pointing to the currently running task and its associated fields 
-	running_task_ptr = dispatched_task.task; 
-	running_task_priority = dispatched_task.priority;
-	running_task_delay = dispatched_task.delay;
+	while (ReadyQueue.ind > 0)
+	{
+		//popping tasks to be executed from the ready queue
+		dispatched_task = dequeue(&ReadyQueue);
+		
+		//pointing to the currently running task and its associated fields 
+		running_task_ptr = dispatched_task.task;
+		running_task_priority = dispatched_task.priority;
+		running_task_delay = dispatched_task.delay;
+		dispatched_task.task();
+	}
 }
 
 //void ReRunMe function implementation 
