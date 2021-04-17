@@ -130,7 +130,6 @@ struct task dequeue(struct task_queue* q)
 void _delay(struct task_queue* q)
 {
 	for (uint8_t i = 0; i < q->ind; i++)
-		//q->tasks[i].delay -= minimum(delay, q->tasks[i].delay);
 		if (q->tasks[i].delay > 0)
 			q->tasks[i].delay--; 
 }
