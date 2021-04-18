@@ -40,6 +40,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 
@@ -48,7 +49,9 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
+//extern struct task_queue DelayedQueue;
 
 /* USER CODE END PFP */
 
@@ -61,10 +64,21 @@ void toggleLED (int n)
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, GPIO_PIN_RESET);  // LED LOW
 		HAL_Delay(n); 	
 }
+uint8_t msg_T1[7] = {"TASK #1"}; 
+uint8_t msg_T2[7] = {"TASK #2"}; 
+uint8_t msg_T3[7] = {"TASK #3"}; 
+uint8_t endline = '\n';
+uint8_t cr = '\r';
+
 void Task1()
 {
 	for (int i=0; i<10; i++)
 	toggleLED(300); 
+	
+	ReRunMe(3);
+	HAL_UART_Transmit(&huart2, msg_T1, sizeof(msg_T1), HAL_MAX_DELAY);	
+	HAL_UART_Transmit(&huart2, &endline, 1, HAL_MAX_DELAY);	
+	HAL_UART_Transmit(&huart2, &cr, 1, HAL_MAX_DELAY);	
 }
 
 //Task 2 function implementation
@@ -72,7 +86,11 @@ void Task2()
 {
 	for (int i=0; i<10; i++)
 	toggleLED(100);
+
 	ReRunMe(5);
+	HAL_UART_Transmit(&huart2, msg_T2, sizeof(msg_T2), HAL_MAX_DELAY);	
+	HAL_UART_Transmit(&huart2, &endline, 1, HAL_MAX_DELAY);	
+	HAL_UART_Transmit(&huart2, &cr, 1, HAL_MAX_DELAY);	
 }
 
 //Task 3 function implementation 
@@ -80,7 +98,11 @@ void Task3()
 {
 	for (int i=0; i<10; i++)
 	toggleLED(50);
-	ReRunMe(3); 
+	
+	//ReRunMe(3); 
+	HAL_UART_Transmit(&huart2, msg_T3, sizeof(msg_T3), HAL_MAX_DELAY);	
+	HAL_UART_Transmit(&huart2, &endline, 1, HAL_MAX_DELAY);	
+	HAL_UART_Transmit(&huart2, &cr, 1, HAL_MAX_DELAY);	
 }
 /* USER CODE END 0 */
 
@@ -94,9 +116,9 @@ int main(void)
 	queueINIT(&ReadyQueue);
 	queueINIT(&DelayedQueue);
 
-	QueTask(&Task1, 1); 
+	QueTask(&Task1, 3); 
 	QueTask(&Task2, 2);
-	QueTask(&Task3, 3);
+	QueTask(&Task3, 1);
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -117,6 +139,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -126,14 +149,10 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
 		Dispatch(); 
-//		Task1(); 
-//		HAL_Delay(500);
-//		Task2(); 
-//		HAL_Delay(500);
-//		Task3(); 
-//		HAL_Delay(500);
+		
   }
   /* USER CODE END 3 */
 }
@@ -146,6 +165,7 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -178,12 +198,53 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /** Configure the main internal regulator output voltage
   */
   if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
 }
 
 /**
@@ -196,6 +257,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
