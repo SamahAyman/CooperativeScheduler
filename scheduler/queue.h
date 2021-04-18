@@ -126,14 +126,6 @@ struct task dequeue(struct task_queue* q)
 	return ret;
 }
 
-//to decrement the delays of the tasks in the delay queue
-void _delay(struct task_queue* q)
-{
-	for (uint8_t i = 0; i < q->ind; i++)
-		if (q->tasks[i].delay > 0)
-			q->tasks[i].delay--; 
-}
-
 //to push the ready tasks from the delay queue to the ready queue
 void push_to_main(struct task_queue* delayed_q, struct task_queue* main_q)
 {
