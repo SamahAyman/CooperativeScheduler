@@ -22,3 +22,23 @@ of the head of this queue expires, the task is removed from the delayed queue an
 sleeping time of the tasks in the delayed queue is updated (decremented by 1) every tick.
 10. The tick is 50 msec. SysTick Timer is used to generate the tick interrupts.
 11. Code developed using STM32CubeMX and Keil μVision to run on the Nucleo-32 board you have.
+
+
+## cooperative scheduler implementation ##
+
+### Queues ###
+
+
+### main functions ###
+
+### test cases ###
+
+
+## Applications ## 
+
+### Ambient temperature monitor ###
+The purpose of this application is to Read the ambient temperature using DS3231 RTC sensor (over I2C bus) every 30 sec, and then produce an alarm through an external LED flashing when the temperature exceeds a certain threshold that is given by the user through TeraTerm terminal emulator using an asynchronous serial link (UART2) connected via a USB-to-TTL module.
+
+
+
+### Parking sensor ###
