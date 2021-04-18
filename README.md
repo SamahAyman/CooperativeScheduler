@@ -8,14 +8,9 @@ Implementation comply with the following specifications/API:
 1. All ready to run tasks (functions) are stored in the ready queue.
 2. The ready queue is sorted based on the tasks priorities
 3. A task is a just a function that returns no data and accepts no arguments.
-4. To insert a task to the ready queue call QueTask() and pass two arguments:
-a. Pointer to the function (function name) that implements the task and
-b. Task’s priority.
+4. To insert a task to the ready queue call QueTask() and pass two arguments(Pointer to the function (function name) that implements the task & Task’s priority)
 5. Supports 8 priority levels
-6. A task can be inserted into the ready queue by
-a. Other tasks (QueTask),
-b. ISRs (QueTask), or
-c. Itself (ReRunMe).
+6. A task can be inserted into the ready queue by: Other tasks (QueTask),ISRs (QueTask), or Itself (ReRunMe).
 7. Dispatch() API is used to remove the highest priority task from the queue and run it.
 8. The system is initialized by a single call to the Init()function. This function creates and initializes all needed data
 structures.
