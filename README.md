@@ -33,6 +33,19 @@ sleeping time of the tasks in the delayed queue is updated (decremented by 1) ev
 
 ### test cases ###
 
+ Markup : * Testing n visual studio
+              * Running tasks based on correct priorities
+
+ Markup : * Testing n visual studio
+              * Test (1)Running tasks based on correct priorities
+
+
+The output shows that the tasks were enqueued correctly into the ready queue based on the higher priority task, then the system is idle once all tasks have been dispatched and the ready queue is empty. 
+T1: Priority 4
+T2: Priority 2
+T3: Priority 3
+
+
 
 ## Applications ## 
 
