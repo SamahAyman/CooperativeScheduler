@@ -1,26 +1,12 @@
 #include "queue.h"
 
 static struct task_queue ReadyQueue, DelayedQueue; 
-static volatile uint16_t TickFlag = 0;
+volatile int TickCount = 0;
 
 struct task dispatched_task;
 task_p running_task_ptr;
 uint16_t running_task_priority;
 uint16_t running_task_delay;
-
-//to simulate systick handler (ticking every 50ms)
-void timer()
-{
-	int counter = 0;
-	TickFlag = 0;
-	for (int i = 1; i <= 50 ; i++)
-		counter++; 
-	
-	if (counter == 50)
-	{
-		TickFlag = 1; 
-	}
-}
 
 //adds the tasks and their priorities to the ready queue
 void QueTask(task_p task_ptr, int priority)
@@ -32,13 +18,6 @@ void QueTask(task_p task_ptr, int priority)
 void Dispatch()
 {
 	struct task dispatched_task;
-	
-	//calling the timer function will ensure decrementing the delay queue only every tick
-	timer();
-
-	//decrement the delays of the tasks in the delayed queue
-	if (TickFlag)
-		_delay(&DelayedQueue);
 
 	//pushing all ready tasks from the delayed queue to the main queue
 	push_to_main(&DelayedQueue, &ReadyQueue); 
@@ -69,41 +48,13 @@ void ReRunMe(int sleepingTime)
 
 }
 
-//Task 1 function implementation 
-void T1()
+//to decrement the delays in the delayed queue each 50 ticks
+void decrement()
 {
-	printf("Task #1\n");
-}
-
-//Task 2 function implementation
-void T2()
-{
-	printf("Task #2\n");
-	ReRunMe(5);
-}
-
-//Task 3 function implementation 
-void T3()
-{
-	printf("Task #3\n");
-	ReRunMe(3); 
-}
-
-
-int main ()
-{
-	queueINIT(&ReadyQueue);
-	queueINIT(&DelayedQueue);
-
-	QueTask(&T1, 1); 
-	QueTask(&T2, 2);
-	QueTask(&T3, 3);
-	
-	while (1) 
+	TickCount++; 
+	if (TickCount == 50)
 	{
-		Dispatch();
+		_delay(&DelayedQueue);
+		TickCount = 0; 
 	}
-
-	system("pause"); 
-	return 0; 
 }
