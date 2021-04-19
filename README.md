@@ -9,7 +9,8 @@
 ```
 
 # Project Description:
-The objective of this short project is to develop a cooperative scheduler for embedded systems. This scheduler utilizes priority queues to enqueue and dequeue tasks and supports up to different 8 priority levels. The scheduler has a number of main functions to be utilized :  (QueTask), (ReRunMe), Dispatch(), Decrement(), and Systick Handler(). The discribtion of each function will be explained below. 
+The objective of this short project is to develop a cooperative scheduler for embedded systems. This scheduler utilizes priority queues to enqueue and dequeue tasks and supports up to different 8 priority levels. The scheduler has a number of main functions to be utilized :  (QueTask), (ReRunMe), Dispatch(), Decrement(), and Systick Handler(). The discribtion of each function will be explained below. We can two queues. One reay queue and the other is delayed queue. Every tast can be inserted into the ready queue by other tasks, firing interrupt (ISRs) or by runnung itself through the ReRunMe() function. 
+
 
 
 # Software Platforms #
@@ -20,6 +21,16 @@ The objective of this short project is to develop a cooperative scheduler for em
 * TeraTerm 
 
 # cooperative scheduler implementation #
+
+## Different Queues## 
+
+### Ready Queue ###
+The queue is a struct that has a pointer to the tasks in the task queue, a pointer to its index and the used pirority levels. Each task appended in the task queue has a pointer to its priority, and delay. In ready queue delay is hard coded to be 0. We can enqueuing and qequeuing to and from the ready queue through using QueTask() and Dispatch() respectively.
+
+### Delayed Queue ###
+User use this queue to schedule a task through passing the delay neeed as a parameter in ReRunMe() function. The tasks are sorted in a descending order based on the delay value, which is decremented every 50 ms using SysTick Timer using DelayedQueueUpdate() function. Whenever the delay of the task at the head of the Delayed Queue is 0, it gets popped from the Delayed Queue and pushed to the Ready Queue. When delay of a task is 0, it get automatically pushed to the ready queue to be ready for execution. 
+
+
 
 ## main functions ##
 
@@ -195,7 +206,7 @@ This application simulates the parking sensor functionality where the ultrasonic
 * [Temperature application video 1](https://drive.google.com/file/d/1lmi-P5ynD7VPU8V_cYlm9Q4O6gKKZzPc/view?usp=sharing)
 * [Temperature application video 2](https://drive.google.com/file/d/1lk94JaLEqaJnZBGcgPB9RU9fmD0oPsug/view?usp=sharing)
 * [Parking sensor video 1](https://drive.google.com/file/d/1GntsNmDrNC5mCMAs-2iiV9q1Jk420FmO/view?usp=sharing)
-* [Parking sensor video 2] (https://drive.google.com/file/d/1VXHlPhfbKJitq2ebi97IFjt1ompTH--m/view?usp=sharing)
+* [Parking sensor video 2](https://drive.google.com/file/d/1VXHlPhfbKJitq2ebi97IFjt1ompTH--m/view?usp=sharing)
 
 ## Datasheets ## 
  * [Temperature](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/HC-SR04%20User%20Guide.pdf)
