@@ -5,6 +5,11 @@
 
 ```
    Embedded Systems Course Project 1
+   
+   Team names: 
+   
+   Israa Fahmy 
+   Samah Ayman 
 
 ```
 
