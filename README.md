@@ -8,8 +8,7 @@
    
    Team names: 
    
-   Israa Fahmy 
-   Samah Ayman 
+   Israa Fahmy  & Samah Ayman 
 
 ```
 
