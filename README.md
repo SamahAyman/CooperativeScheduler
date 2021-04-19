@@ -54,13 +54,18 @@ T2: Priority 2
 
 T3: Priority 3
 
+
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture1.png)
 
 
+
+
 ### Test (2): Testing Rerunme(0) case ###
+
 Task 1 was given the highest priority, then the task reruns itself after 0 ticks “Rerunme(0)”, so it runs forever as it always has the highest priority in the queue. The other tasks were given less priorities so it is expected that they starve because Task  keeps rerunning itself with its highest priority.
 
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture2.png)
+
 
 
 
@@ -70,9 +75,10 @@ Tasks were given the following priorities. Task 2 reruns itself after 5 ticks, w
 
 T1: Priority 1 
 
-T2: Priority 2   ReRunMe(5)
+T2: Priority 2 =>  ReRunMe(5)
 
-T3: Priority 3  ReRunMe(3)
+T3: Priority 3 => ReRunMe(3)
+
 
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture3.png)
 
@@ -90,12 +96,19 @@ T1: Priority 9 (violating max priority allowed)
 ### Test (5): Testing scheduling of 4 tasks ###
 
 Tasks were given the following priorities. T1 reruns itself after 2 ticks, T2, reruns itself after 8 ticks, T3 reruns itself after 6 ticks, and T4 runs only once with the lowest priority. After T4 runs once, T1,T2, and T3 keep alternating forever, and the system is only idle if neither of the sleeping time of the 3 tasks is elapsed yet. 
+
 T1: Priority 1 => ReRunMe(2)
+
 T2: Priority 2 => ReRunMe(8)
+
 T3: Priority 3 => ReRunMe(6)
+
 T4: Priority 4 
 
+
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture5.png)
+
+
 
 
 ### Test (6): Scheduling 4 tasks with one running Rerunme(0) ###
@@ -112,7 +125,9 @@ T4: Priority 4 => ReRunMe(0)
 
 The first 3 tasks rerun themselves after delays 2, 8, and 6 respectively. And task 4 reruns itself after 0 ticks which means it doesn’t get inserted into the delayed queue rather it gets inserted into the ready queue directly. Despite task 4 reruns itself after 0 ticks and it is always ready, it doesn’t run forever as in Test (2) because other tasks are ready in the queue with higher priorities. 
 
+
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture6.png)
+
 
 
 
@@ -122,7 +137,9 @@ Tasks were given the following priorities:
 T1: Priority 1 
 T2: Priority 2 => ReRunMe(5)
 T3: Priority 3 => ReRunMe(3)
-Task 2 reruns itself after 5 ticks while task 3 reruns itself after 3 ticks. Task 1 toggles the led with a delay of 300 ms, task 2 toggles the led with a delay of 100 ms, and task 3 toggles the led with a delay of 50 ms. So, as you can observe from the demo video: task 1 runs first, then task 2, then task 3, then both task 2 and task 3 keep running alternatively forever; the difference in the toggling frequency clarifies which task is currently running. 
+Task 2 reruns itself after 5 ticks while task 3 reruns itself after 3 ticks. 
+Task 1 toggles the led with a delay of 300 ms, task 2 toggles the led with a delay of 100 ms, and task 3 toggles the led with a delay of 50 ms. 
+So, as you can observe from the demo video: task 1 runs first, then task 2, then task 3, then both task 2 and task 3 keep running alternatively forever; the difference in the toggling frequency clarifies which task is currently running. 
 
 
 
