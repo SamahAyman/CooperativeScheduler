@@ -33,7 +33,7 @@ sleeping time of the tasks in the delayed queue is updated (decremented by 1) ev
 
 ### test cases ###
 
-#### Testing n visual studio ####
+#### 1. Testing on visual studio ####
           
 ##### Test (1): Running tasks based on correct priorities #####
 
@@ -81,9 +81,9 @@ T1: Priority 9 (violating max priority allowed)
 ##### Test (5): Testing scheduling of 4 tasks ##### 
 
 Tasks were given the following priorities. T1 reruns itself after 2 ticks, T2, reruns itself after 8 ticks, T3 reruns itself after 6 ticks, and T4 runs only once with the lowest priority. After T4 runs once, T1,T2, and T3 keep alternating forever, and the system is only idle if neither of the sleeping time of the 3 tasks is elapsed yet. 
-T1: Priority 1   ReRunMe(2)
-T2: Priority 2   ReRunMe(8)
-T3: Priority 3  ReRunMe(6)
+T1: Priority 1 => ReRunMe(2)
+T2: Priority 2 => ReRunMe(8)
+T3: Priority 3 => ReRunMe(6)
 T4: Priority 4 
 
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture5.png)
@@ -103,6 +103,17 @@ T4: Priority 4 => ReRunMe(0)
 
 The first 3 tasks rerun themselves after delays 2, 8, and 6 respectively. And task 4 reruns itself after 0 ticks which means it doesn’t get inserted into the delayed queue rather it gets inserted into the ready queue directly. Despite task 4 reruns itself after 0 ticks and it is always ready, it doesn’t run forever as in Test (2) because other tasks are ready in the queue with higher priorities. 
 
+#### 2. Testing on Keil uVision ####
+
+Tasks were given the following priorities:
+T1: Priority 1 
+T2: Priority 2 => ReRunMe(5)
+T3: Priority 3 => ReRunMe(3)
+Task 2 reruns itself after 5 ticks while task 3 reruns itself after 3 ticks. Task 1 toggles the led with a delay of 300 ms, task 2 toggles the led with a delay of 100 ms, and task 3 toggles the led with a delay of 50 ms. So, as you can observe from the demo video: task 1 runs first, then task 2, then task 3, then both task 2 and task 3 keep running alternatively forever; the difference in the toggling frequency clarifies which task is currently running. 
+
+
+
+
 
 ## Applications ## 
 
@@ -117,4 +128,25 @@ The purpose of this application is to Read the ambient temperature using DS3231 
 
 #### Hardware Circuitry #### 
 
+![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/temp.jpeg)
+
+#### CubeMX pin Congiguration ####
+
+![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/C-temp.png)
+
+
+
+
 ### Parking sensor ###
+
+
+
+## Demo Videos ## 
+
+* [Altrasonic video](https://drive.google.com/file/d/1EFL_sFO069n72mjgJbUG4CE1OKInkyMb/view?usp=sharing) 
+* [Temperature application video 1](https://drive.google.com/file/d/1lmi-P5ynD7VPU8V_cYlm9Q4O6gKKZzPc/view?usp=sharing)
+* [Temperature application video 2](https://drive.google.com/file/d/1lk94JaLEqaJnZBGcgPB9RU9fmD0oPsug/view?usp=sharing)
+
+## Datasheets ## 
+ * [Temperature](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/HC-SR04%20User%20Guide.pdf)
+ * [Ultrasonic](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/DS3231%20datasheet.pdf)
