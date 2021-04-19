@@ -191,9 +191,11 @@ This application simulates the parking sensor functionality where the ultrasonic
 
 ## Demo Videos ## 
 
-* [Altrasonic video](https://drive.google.com/file/d/1EFL_sFO069n72mjgJbUG4CE1OKInkyMb/view?usp=sharing) 
+* [Scheduling Demo](https://drive.google.com/file/d/1EFL_sFO069n72mjgJbUG4CE1OKInkyMb/view?usp=sharing) 
 * [Temperature application video 1](https://drive.google.com/file/d/1lmi-P5ynD7VPU8V_cYlm9Q4O6gKKZzPc/view?usp=sharing)
 * [Temperature application video 2](https://drive.google.com/file/d/1lk94JaLEqaJnZBGcgPB9RU9fmD0oPsug/view?usp=sharing)
+* [Parking sensor video 1](https://drive.google.com/file/d/1GntsNmDrNC5mCMAs-2iiV9q1Jk420FmO/view?usp=sharing)
+* [Parking sensor video 2] (https://drive.google.com/file/d/1VXHlPhfbKJitq2ebi97IFjt1ompTH--m/view?usp=sharing)
 
 ## Datasheets ## 
  * [Temperature](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/HC-SR04%20User%20Guide.pdf)
