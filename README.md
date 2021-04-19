@@ -1,7 +1,7 @@
 # CooperativeScheduler
 Embedded Systems Course Project 1
 
-## Project Description:
+# Project Description:
 The objective of this short project is to develop a cooperative scheduler for embedded systems. This scheduler is similar to the
 function queue scheduler. 
 Implementation comply with the following specifications/API:
@@ -24,35 +24,35 @@ sleeping time of the tasks in the delayed queue is updated (decremented by 1) ev
 11. Code developed using STM32CubeMX and Keil μVision to run on the Nucleo-32 board you have.
 
 
-## cooperative scheduler implementation ##
+# cooperative scheduler implementation ##
 
-### Queues ###
+## Queues ##
 
 
-### main functions ###
+## main functions ##
 
-#### * QueTask() ####
+###  QueTask() ###
 This function takes 2 arguments: a pointer to the task and the priority of the task. Inside QueTask(), we call enqueue function which inserts the task into the ready queue with its priority and a default delay of 0 indicating that the task is ready to be dispatched once its turn in the ready queue comes. This function could be called inside the main function, other tasks, or the ISRs.
 
-#### * Dispatch() ####
+### Dispatch() ###
 This function is used to dequeue tasks with the highest priority from the ready queue to run them. It checks if the queue is empty, it calls the IDLE state; if the ready queue is not empty, it dequeues from the queue. Dispatch function gets called once in the while(1) loop inside the main function, so every time unit (signaled by systick handler) dispatch function is called once.
 
-#### * ReRunMe() ####
+### ReRunMe() ###
 This is function is used to rerun certain tasks with specific time delays. It takes an integer delay argument: if the delay is 0, then the task is ready to be inserted into the ready queue; if the delay is greater than 0, then the task will be inserted into the delayed queue. 
 
-#### * Decrement() ####
+### Decrement() ###
 This function is called inside the systick handler to decrement the delays of the tasks inside the delayed queue by 1 each tick (each 50 ms). A counter is used inside it to count the number of ticks each time the systick handler throws an interrupt. 
 
-#### * Systick Handler() ####
+### Systick Handler() ###
 This function is called each time the systick throws an interrupt. The main purpose of this function is to track the time of execution of the program in time units. In addition, the ticks counter is incremented each time unit inside this function and the decrementing function is called to decrease the delays of the tasks in the delay queue by 1. Using the systick handler, timings of tasks scheduling and execution could be handled. 
 
 
 
-### test cases ###
+# Test Cases #
 
-#### 1. Testing on visual studio ####
+## 1. Testing on visual studio ##
           
-##### Test (1): Running tasks based on correct priorities #####
+### Test (1): Running tasks based on correct priorities ###
 
 The output shows that the tasks were enqueued correctly into the ready queue based on the higher priority task, then the system is idle once all tasks have been dispatched and the ready queue is empty. 
 
@@ -65,14 +65,14 @@ T3: Priority 3
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture1.png)
 
 
-##### Test (2): Testing Rerunme(0) case #####
+### Test (2): Testing Rerunme(0) case ###
 Task 1 was given the highest priority, then the task reruns itself after 0 ticks “Rerunme(0)”, so it runs forever as it always has the highest priority in the queue. The other tasks were given less priorities so it is expected that they starve because Task  keeps rerunning itself with its highest priority.
 
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture2.png)
 
 
 
-##### Test (3): Testing enqueuing and dequeuing tasks from the delayed queue according to their delays #####
+### Test (3): Testing enqueuing and dequeuing tasks from the delayed queue according to their delays ###
 
 Tasks were given the following priorities. Task 2 reruns itself after 5 ticks, while task 3 reruns itself after 3 ticks which means there will be 2 ticks where the system is idle before task 2 and task 3 keep repeating over and over.
 
@@ -87,7 +87,7 @@ T3: Priority 3  ReRunMe(3)
 
 
 
-##### Test (4): Violating the priority limit case ##### 
+### Test (4): Violating the priority limit case ###
 T1: Priority 9 (violating max priority allowed) 
 
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture4.png)
@@ -95,7 +95,7 @@ T1: Priority 9 (violating max priority allowed)
 
 
 
-##### Test (5): Testing scheduling of 4 tasks ##### 
+### Test (5): Testing scheduling of 4 tasks ###
 
 Tasks were given the following priorities. T1 reruns itself after 2 ticks, T2, reruns itself after 8 ticks, T3 reruns itself after 6 ticks, and T4 runs only once with the lowest priority. After T4 runs once, T1,T2, and T3 keep alternating forever, and the system is only idle if neither of the sleeping time of the 3 tasks is elapsed yet. 
 T1: Priority 1 => ReRunMe(2)
@@ -106,7 +106,7 @@ T4: Priority 4
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Picture5.png)
 
 
-##### Test (6): Scheduling 4 tasks with one running Rerunme(0) #####
+### Test (6): Scheduling 4 tasks with one running Rerunme(0) ###
 
 Tasks were given the following priorities:
 
@@ -124,7 +124,7 @@ The first 3 tasks rerun themselves after delays 2, 8, and 6 respectively. And ta
 
 
 
-#### 2. Testing on Keil uVision ####
+## 2. Testing on Keil uVision ##
 
 Tasks were given the following priorities:
 T1: Priority 1 
@@ -136,31 +136,38 @@ Task 2 reruns itself after 5 ticks while task 3 reruns itself after 3 ticks. Tas
 
 
 
-## Applications ## 
+# Applications #
 
-### Ambient temperature monitor ###
+## Ambient temperature monitor ##
 The purpose of this application is to Read the ambient temperature using DS3231 RTC sensor (over I2C bus) every 30 sec, and then produce an alarm through an external LED flashing when the temperature exceeds a certain threshold that is given by the user through TeraTerm terminal emulator using an asynchronous serial link (UART2) connected via a USB-to-TTL module.
 
-#### Tasks #### 
+### Tasks ###
 * *Initialization*: In this task we assign the registers to its corresponding values. 
 * *Taking Threshold from user*: In this task we will display a message to the user to enter the threshold and then display this value on the TeraTerm screen. 
 * *Taking Temperature reading*: In this task we utilized DS3231 module to measure the temperature. I2C communication was used to retrieve the sensor data and then UART communication was used to display the readings on TeraTerm. 
 * *Alarm*: In this task we toggle a LED in case temperature readings exceeds the threshold. 
 
-#### Hardware Circuitry #### 
+### Hardware Circuitry ###
 
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/temp.jpeg)
 
-#### CubeMX pin Congiguration ####
+### CubeMX pin Congiguration ###
 
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/C-temp.PNG )
 
-### Parking sensor: ###
-
-#### Tasks #### 
 
 
-#### Hardware Circuitry #### 
+## Parking sensor: ##
+This application simulates the parking sensor functionality where the ultrasonic sensor is used to measure the distance between the car and the nearest obstacle. Based on the distance measurement, a buzzer sound is produced with beeps frequency relative to the distance to reflect how close the is from the parking car.
+
+### Tasks ###
+* *Read_Task()* :This task is used to get measurements from the ultrasonic and calculate the distance. Through using the HAL timer, it gets the elapsed time. And then having the speed of the produced ultrasonic waves, it gets the travelled distance of the wave in the given time duration. 
+
+* *BUZZ_Task()*: This function is used to trigger the buzzer to produce a sound relative to the measured distance. This function is only activated if the measured distance is less than a certain threshold, which is 30 in our case.
+
+
+
+### Hardware Circuitry ####
 
 ![alt text](https://github.com/SamahAyman/CooperativeScheduler/blob/main/Images/Altra.jpeg)
 
