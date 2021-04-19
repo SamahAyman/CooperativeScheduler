@@ -34,16 +34,16 @@ sleeping time of the tasks in the delayed queue is updated (decremented by 1) ev
 #### * QueTask() ####
 This function takes 2 arguments: a pointer to the task and the priority of the task. Inside QueTask(), we call enqueue function which inserts the task into the ready queue with its priority and a default delay of 0 indicating that the task is ready to be dispatched once its turn in the ready queue comes. This function could be called inside the main function, other tasks, or the ISRs.
 
-#### *Dispatch() ####
+#### * Dispatch() ####
 This function is used to dequeue tasks with the highest priority from the ready queue to run them. It checks if the queue is empty, it calls the IDLE state; if the ready queue is not empty, it dequeues from the queue. Dispatch function gets called once in the while(1) loop inside the main function, so every time unit (signaled by systick handler) dispatch function is called once.
 
-#### *ReRunMe() ####
+#### * ReRunMe() ####
 This is function is used to rerun certain tasks with specific time delays. It takes an integer delay argument: if the delay is 0, then the task is ready to be inserted into the ready queue; if the delay is greater than 0, then the task will be inserted into the delayed queue. 
 
-#### *Decrement() ####
+#### * Decrement() ####
 This function is called inside the systick handler to decrement the delays of the tasks inside the delayed queue by 1 each tick (each 50 ms). A counter is used inside it to count the number of ticks each time the systick handler throws an interrupt. 
 
-#### *Systick Handler() ####
+#### * Systick Handler() ####
 This function is called each time the systick throws an interrupt. The main purpose of this function is to track the time of execution of the program in time units. In addition, the ticks counter is incremented each time unit inside this function and the decrementing function is called to decrease the delays of the tasks in the delay queue by 1. Using the systick handler, timings of tasks scheduling and execution could be handled. 
 
 
